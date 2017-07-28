@@ -1,0 +1,26 @@
+{
+  "name": "@hscmap/gl-wrapper",
+  "version": "0.0.0",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "scripts": {
+    "prepublish": "tsc",
+    "example": "webpack --context example --config ./example/webpack.config.js"
+  },
+  "devDependencies": {
+    "@types/sprintf-js": "0.0.27",
+    "file-loader": "^0.11.2",
+    "raw-loader": "^0.5.1",
+    "ts-loader": "^2.3.2",
+    "ts-node": "^3.3.0",
+    "typescript": "^2.4.2",
+    "webpack": "^3.4.1",
+    "webpack-dev-server": "^2.6.1"
+  },
+  "dependencies": {
+    "@hscmap/tuple-map": "0.0.0",
+    "sprintf-js": "^1.1.1"
+  },
+  "homepage": "https://github.com/michitaro/gl-wrapper",
+  "repository": "github/michitaro/gl-wrapper"
+}
