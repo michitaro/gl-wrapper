@@ -1,5 +1,4 @@
 import { AttribList } from './attrib_list';
-import { mat4 } from 'gl-matrix';
 export declare class Program {
     private gl;
     private vertSource;
@@ -18,11 +17,9 @@ export declare class Program {
     use(): void;
     attribLocation(varName: string): number;
     uniformLocation(varName: string): WebGLUniformLocation;
-    enableAttribList(attribList: AttribList, callback: {
-        (): void;
-    }): void;
+    enableAttribList(attribList: AttribList, cb: () => void): void;
     uniformMatrix4fv(matrices: {
-        [name: string]: mat4;
+        [name: string]: Float32Array;
     }, transpose?: boolean): void;
     uniform1f(vars: {
         [name: string]: number;

@@ -22,5 +22,5 @@
     "sprintf-js": "^1.1.1"
   },
   "homepage": "https://github.com/michitaro/gl-wrapper",
-  "repository": "github/michitaro/gl-wrapper"
+  "repository": "github:michitaro/gl-wrapper"
 }
