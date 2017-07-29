@@ -1,4 +1,28 @@
-import { canvasPool, Program, AttribList, Texture } from '../src'
+# gl-wrapper
+Simple wrapper classes of WebGL objects in TypeScript.
+
+## Install
+
+```sh
+npm instasll --save @hscmap/gl-wrapper
+```
+
+## Example
+
+### How to run example code
+1. Start local http server that sersves the example files.
+    ```sh
+    git clone https://github.com/michitaro/gl-wrapper.git
+    cd gl-wrapper
+    npm install
+    npm run example
+    ```
+1. Now, example files are served at [http://localhost:8080/]()
+
+## Example Code
+
+```typescript
+import { canvasPool, Program, AttribList, Texture } from '@hscmap/gl-wrapper'
 
 
 window.addEventListener('load', async () => {
@@ -92,3 +116,4 @@ function drawTexture(gl: WebGLRenderingContext, img: HTMLImageElement) {
     attribList.release()
     program.release()
 }
+```

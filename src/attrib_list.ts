@@ -56,18 +56,18 @@ export class AttribList {
     }
 
     enable(program: Program, f: () => void) {
-        program.use()
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.bufferName)
+        const gl = this.gl
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferName)
         for (let i in this.members) {
             let m = this.members[i]
-            this.gl.enableVertexAttribArray(program.attribLocation(m.name))
-            this.gl.vertexAttribPointer(program.attribLocation(m.name), m.nComponents, m.dataType!, m.normalize!, this.stride, this.offset[i])
+            gl.enableVertexAttribArray(program.attribLocation(m.name))
+            gl.vertexAttribPointer(program.attribLocation(m.name), m.nComponents, m.dataType!, m.normalize!, this.stride, this.offset[i])
         }
         f()
         for (let m of this.members) {
-            this.gl.disableVertexAttribArray(program.attribLocation(m.name))
+            gl.disableVertexAttribArray(program.attribLocation(m.name))
         }
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null)
+        gl.bindBuffer(gl.ARRAY_BUFFER, null)
     }
 
 }

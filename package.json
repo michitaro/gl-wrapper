@@ -5,7 +5,7 @@
   "types": "./lib/index.d.ts",
   "scripts": {
     "prepublish": "tsc",
-    "example": "webpack --context example --config ./example/webpack.config.js"
+    "example": "webpack-dev-server --context example --config ./example/webpack.config.js"
   },
   "devDependencies": {
     "@types/sprintf-js": "0.0.27",

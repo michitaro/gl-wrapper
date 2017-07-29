@@ -5,7 +5,7 @@ export interface DataOption {
     array: Int16Array,
 }
 
-export class IndexBuffer implements glUtils.Bindable {
+export class IndexBuffer {
     private name: WebGLBuffer
     private usage: number
     private length: number
@@ -20,11 +20,9 @@ export class IndexBuffer implements glUtils.Bindable {
         this.gl.deleteBuffer(this.name)
     }
 
-    bind() {
+    bind(cb:()=>void) {
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.name)
-    }
-
-    unbind() {
+        cb()
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, null)
     }
 

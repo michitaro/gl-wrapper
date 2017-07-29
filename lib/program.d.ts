@@ -1,4 +1,3 @@
-/// <reference types="gl-matrix" />
 import { AttribList } from './attrib_list';
 import { mat4 } from 'gl-matrix';
 export declare class Program {

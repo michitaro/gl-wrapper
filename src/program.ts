@@ -1,5 +1,4 @@
 import { AttribList } from './attrib_list'
-import { mat4 } from 'gl-matrix'
 import * as glUtils from './utils'
 import { TupleMap } from "@hscmap/tuple-map"
 
@@ -76,36 +75,37 @@ export class Program {
         return location
     }
 
-    enableAttribList(attribList: AttribList, callback: { (): void }) {
-        attribList.enable(this, callback)
+    enableAttribList(attribList: AttribList, cb: () => void) {
+        this.use()
+        attribList.enable(this, cb)
     }
-
-    uniformMatrix4fv(matrices: { [name: string]: mat4; }, transpose: boolean = false) {
+    
+    uniformMatrix4fv(matrices: { [name: string]: Float32Array }, transpose: boolean = false) {
         for (let name in matrices) {
             let matrix = matrices[name]
             this.gl.uniformMatrix4fv(this.uniformLocation(name), transpose, matrix)
         }
     }
 
-    uniform1f(vars: { [name: string]: number; }) {
+    uniform1f(vars: { [name: string]: number }) {
         for (let name in vars) {
             this.gl.uniform1f(this.uniformLocation(name), vars[name])
         }
     }
 
-    uniform1i(vars: { [name: string]: number; }) {
+    uniform1i(vars: { [name: string]: number }) {
         for (let name in vars) {
             this.gl.uniform1i(this.uniformLocation(name), vars[name])
         }
     }
 
-    uniform3fv(vars: { [name: string]: number[]; }) {
+    uniform3fv(vars: { [name: string]: number[] }) {
         for (let name in vars) {
             this.gl.uniform3fv(this.uniformLocation(name), vars[name])
         }
     }
 
-    uniform4fv(vars: { [name: string]: number[]; }) {
+    uniform4fv(vars: { [name: string]: number[] }) {
         for (let name in vars) {
             this.gl.uniform4fv(this.uniformLocation(name), vars[name])
         }
