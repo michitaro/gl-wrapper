@@ -1,6 +1,6 @@
 {
   "name": "@hscmap/gl-wrapper",
-  "version": "0.1.1",
+  "version": "0.3.2",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
@@ -19,7 +19,7 @@
     "webpack-dev-server": "^2.6.1"
   },
   "dependencies": {
-    "@hscmap/tuple-map": "0.0.0",
+    "@hscmap/tuple-map": "latest",
     "sprintf-js": "^1.1.1"
   },
   "homepage": "https://github.com/michitaro/gl-wrapper",
