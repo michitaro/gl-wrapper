@@ -83,18 +83,6 @@ function enable(gl, fs, callback) {
     }
 }
 exports.enable = enable;
-function bind(bs, callback) {
-    for (var _i = 0, bs_1 = bs; _i < bs_1.length; _i++) {
-        var b = bs_1[_i];
-        b.bind();
-    }
-    callback();
-    for (var _a = 0, bs_2 = bs; _a < bs_2.length; _a++) {
-        var b = bs_2[_a];
-        b.unbind();
-    }
-}
-exports.bind = bind;
 function addLineNumber(body) {
     return body.split("\n")
         .map(function (line, n) { return sprintf_js_1.sprintf('%4d | %s', n + 1, line); })
@@ -161,25 +149,28 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var src_1 = __webpack_require__(3);
-window.addEventListener('load', function (e) { return __awaiter(_this, void 0, void 0, function () {
+window.addEventListener('load', function () { return __awaiter(_this, void 0, void 0, function () {
     var _a, canvas, gl, mp, img;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 _a = src_1.canvasPool.pull({ alpha: false }), canvas = _a.canvas, gl = _a.gl;
-                mp = document.querySelector('#mount-point').appendChild(canvas);
-                canvas.style.width = '100%';
-                canvas.style.height = '100%';
+                mp = document.querySelector('#mount-point');
+                mp.appendChild(canvas);
                 resizeCanvasContext(canvas);
                 return [4 /*yield*/, loadImage(__webpack_require__(11))];
             case 1:
                 img = _b.sent();
-                draw(gl, img);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+                drawRGBTriangle(gl);
+                drawTexture(gl, img);
                 return [2 /*return*/];
         }
     });
 }); });
 function resizeCanvasContext(canvas) {
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
     var gl = canvas.getContext('webgl');
     var r = devicePixelRatio;
     var w = r * canvas.clientWidth;
@@ -193,18 +184,11 @@ function loadImage(url) {
         return __generator(this, function (_a) {
             return [2 /*return*/, new Promise(function (resolve) {
                     var img = new Image();
-                    img.onload = function () {
-                        resolve(img);
-                    };
+                    img.onload = function () { return resolve(img); };
                     img.src = url;
                 })];
         });
     });
-}
-function draw(gl, img) {
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    drawRGBTriangle(gl);
-    drawTexture(gl, img);
 }
 function drawRGBTriangle(gl) {
     var program = src_1.Program.new(gl, __webpack_require__(12), __webpack_require__(13));
@@ -219,12 +203,11 @@ function drawRGBTriangle(gl) {
             /* a_coord */ +0, +1, /* a_color */ +0, +0, +1, +1,
         ])
     });
-    var start = performance.now();
-    attribList.enable(program, function () {
+    program.enableAttribList(attribList, function () {
         gl.drawArrays(gl.TRIANGLES, 0, attribList.vertexCount);
     });
-    program.release();
     attribList.release();
+    program.release();
 }
 function drawTexture(gl, img) {
     var program = src_1.Program.new(gl, __webpack_require__(14), __webpack_require__(15));
@@ -240,13 +223,14 @@ function drawTexture(gl, img) {
     var texture = new src_1.Texture(gl);
     texture.setImage(img);
     program.uniform1i({ u_texture0: 0 });
-    attribList.enable(program, function () {
-        src_1.utils.bind([texture], function () {
+    program.enableAttribList(attribList, function () {
+        texture.bind(function () {
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, attribList.vertexCount);
         });
     });
-    program.release();
+    texture.release();
     attribList.release();
+    program.release();
 }
 
 
@@ -306,7 +290,7 @@ function pull(opt) {
         pools.set(key, new CanvasPool());
     var pool = pools.get(key);
     var canvas = pool.pull();
-    var gl = canvas.getContext('webgl', opt);
+    var gl = canvas.getContext('webgl', opt) || canvas.getContext('experimental-webgl');
     if (gl == null)
         throw new Error("gl == null");
     canvas2pool.set(canvas, pool);
@@ -615,8 +599,9 @@ var Program = (function () {
         this.uniformLocationMemo.set(varName, location);
         return location;
     };
-    Program.prototype.enableAttribList = function (attribList, callback) {
-        attribList.enable(this, callback);
+    Program.prototype.enableAttribList = function (attribList, cb) {
+        this.use();
+        attribList.enable(this, cb);
     };
     Program.prototype.uniformMatrix4fv = function (matrices, transpose) {
         if (transpose === void 0) { transpose = false; }
@@ -701,6 +686,9 @@ var TupleMap = (function () {
     TupleMap.prototype.clear = function () {
         this.m.clear();
         this.idMaker.clear();
+    };
+    TupleMap.prototype._internalMapSize = function () {
+        return this.idMaker.idMaker.m.size;
     };
     return TupleMap;
 }());
@@ -799,19 +787,19 @@ var AttribList = (function () {
         }
     };
     AttribList.prototype.enable = function (program, f) {
-        program.use();
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.bufferName);
+        var gl = this.gl;
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferName);
         for (var i in this.members) {
             var m = this.members[i];
-            this.gl.enableVertexAttribArray(program.attribLocation(m.name));
-            this.gl.vertexAttribPointer(program.attribLocation(m.name), m.nComponents, m.dataType, m.normalize, this.stride, this.offset[i]);
+            gl.enableVertexAttribArray(program.attribLocation(m.name));
+            gl.vertexAttribPointer(program.attribLocation(m.name), m.nComponents, m.dataType, m.normalize, this.stride, this.offset[i]);
         }
         f();
         for (var _i = 0, _a = this.members; _i < _a.length; _i++) {
             var m = _a[_i];
-            this.gl.disableVertexAttribArray(program.attribLocation(m.name));
+            gl.disableVertexAttribArray(program.attribLocation(m.name));
         }
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
     };
     return AttribList;
 }());
@@ -847,10 +835,9 @@ var IndexBuffer = (function () {
     IndexBuffer.prototype.release = function () {
         this.gl.deleteBuffer(this.name);
     };
-    IndexBuffer.prototype.bind = function () {
+    IndexBuffer.prototype.bind = function (cb) {
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.name);
-    };
-    IndexBuffer.prototype.unbind = function () {
+        cb();
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, null);
     };
     IndexBuffer.prototype.setData = function (_a) {
@@ -879,7 +866,7 @@ var Texture = (function () {
         var _this = this;
         this.gl = gl;
         this.name = glUtils.nonNull(gl.createTexture());
-        glUtils.bind([this], function () {
+        this.bind(function () {
             gl.texParameteri(_this.gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
             gl.texParameteri(_this.gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
             gl.texParameteri(_this.gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -889,15 +876,14 @@ var Texture = (function () {
     Texture.prototype.release = function () {
         this.gl.deleteTexture(this.name);
     };
-    Texture.prototype.bind = function () {
+    Texture.prototype.bind = function (cb) {
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.name);
-    };
-    Texture.prototype.unbind = function () {
+        cb();
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
     };
     Texture.prototype.setImage = function (img) {
         var _this = this;
-        glUtils.bind([this], function () {
+        this.bind(function () {
             _this.gl.texImage2D(_this.gl.TEXTURE_2D, 0, _this.gl.RGBA, _this.gl.RGBA, _this.gl.UNSIGNED_BYTE, img);
         });
     };
