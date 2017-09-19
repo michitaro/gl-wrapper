@@ -32,7 +32,7 @@ export function pull(opt: WebGLContextAttributes) {
         pools.set(key, new CanvasPool())
     const pool = pools.get(key)!
     const canvas = pool.pull()
-    const gl = canvas.getContext('webgl', opt)
+    const gl = canvas.getContext('webgl', opt) || canvas.getContext('experimental-webgl')
     if (gl == null)
         throw new Error("gl == null")
     canvas2pool.set(canvas, pool)
