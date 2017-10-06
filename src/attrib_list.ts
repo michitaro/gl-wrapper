@@ -19,7 +19,8 @@ export class AttribList {
     private stride: number
     private offset: number[]
     private members: Member[]
-    private usage: number
+    private usage = -1
+    private bufferSize = -1
     vertexCount = 0
 
     constructor(private gl: WebGLRenderingContext, data?: DataOption) {
@@ -46,17 +47,17 @@ export class AttribList {
             }
         }
         if (array) {
-            const vertexCount = byteLength(array) / this.stride
+            this.vertexCount = byteLength(array) / this.stride
             this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.bufferName)
-            if (usage != this.usage || this.vertexCount != vertexCount) {
+            if (usage != this.usage || this.bufferSize < this.vertexCount) {
+                this.usage = usage
+                this.bufferSize = this.vertexCount
                 this.gl.bufferData(this.gl.ARRAY_BUFFER, array, usage)
             }
             else {
                 this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, array)
             }
             this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null)
-            this.usage = usage
-            this.vertexCount = vertexCount
             if (this.vertexCount % 1 !== 0) {
                 throw "nComponents may be invalid"
             }
