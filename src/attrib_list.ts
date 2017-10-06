@@ -19,6 +19,7 @@ export class AttribList {
     private stride: number
     private offset: number[]
     private members: Member[]
+    private usage: number
     vertexCount = 0
 
     constructor(private gl: WebGLRenderingContext, data?: DataOption) {
@@ -37,7 +38,7 @@ export class AttribList {
             this.members = members
             this.stride = 0
             this.offset = []
-            for (let m of members) {
+            for (const m of members) {
                 if (m.dataType == undefined) m.dataType = this.gl.FLOAT
                 if (m.normalize == undefined) m.normalize = false
                 this.offset.push(this.stride)
@@ -45,10 +46,17 @@ export class AttribList {
             }
         }
         if (array) {
+            const vertexCount = byteLength(array) / this.stride
             this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.bufferName)
-            this.gl.bufferData(this.gl.ARRAY_BUFFER, array, usage)
+            if (usage != this.usage || this.vertexCount != vertexCount) {
+                this.gl.bufferData(this.gl.ARRAY_BUFFER, array, usage)
+            }
+            else {
+                this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, array)
+            }
             this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null)
-            this.vertexCount = byteLength(array) / this.stride
+            this.usage = usage
+            this.vertexCount = vertexCount
             if (this.vertexCount % 1 !== 0) {
                 throw "nComponents may be invalid"
             }
@@ -58,13 +66,13 @@ export class AttribList {
     enable(program: Program, f: () => void) {
         const gl = this.gl
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferName)
-        for (let i in this.members) {
-            let m = this.members[i]
+        for (const i in this.members) {
+            const m = this.members[i]
             gl.enableVertexAttribArray(program.attribLocation(m.name))
             gl.vertexAttribPointer(program.attribLocation(m.name), m.nComponents, m.dataType!, m.normalize!, this.stride, this.offset[i])
         }
         f()
-        for (let m of this.members) {
+        for (const m of this.members) {
             gl.disableVertexAttribArray(program.attribLocation(m.name))
         }
         gl.bindBuffer(gl.ARRAY_BUFFER, null)
