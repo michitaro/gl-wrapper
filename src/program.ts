@@ -79,7 +79,7 @@ export class Program {
         this.use()
         attribList.enable(this, cb)
     }
-    
+
     uniformMatrix4fv(matrices: { [name: string]: Float32Array }, transpose: boolean = false) {
         for (let name in matrices) {
             let matrix = matrices[name]
@@ -91,6 +91,13 @@ export class Program {
         for (let name in matrices) {
             let matrix = matrices[name]
             this.gl.uniformMatrix3fv(this.uniformLocation(name), transpose, matrix)
+        }
+    }
+
+    uniformMatrix2fv(matrices: { [name: string]: Float32Array }, transpose: boolean = false) {
+        for (let name in matrices) {
+            let matrix = matrices[name]
+            this.gl.uniformMatrix2fv(this.uniformLocation(name), transpose, matrix)
         }
     }
 
