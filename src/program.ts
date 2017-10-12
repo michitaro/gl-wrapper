@@ -87,6 +87,13 @@ export class Program {
         }
     }
 
+    uniformMatrix3fv(matrices: { [name: string]: Float32Array }, transpose: boolean = false) {
+        for (let name in matrices) {
+            let matrix = matrices[name]
+            this.gl.uniformMatrix3fv(this.uniformLocation(name), transpose, matrix)
+        }
+    }
+
     uniform1f(vars: { [name: string]: number }) {
         for (let name in vars) {
             this.gl.uniform1f(this.uniformLocation(name), vars[name])
