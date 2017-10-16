@@ -8,7 +8,7 @@ export interface DataOption {
 export class IndexBuffer {
     private name: WebGLBuffer
     private usage: number
-    private length: number
+    private _length: number
 
     constructor(private gl: WebGLRenderingContext, dataOption?: DataOption) {
         this.name = glUtils.nonNull(this.gl.createBuffer())
@@ -20,7 +20,7 @@ export class IndexBuffer {
         this.gl.deleteBuffer(this.name)
     }
 
-    bind(cb:()=>void) {
+    bind(cb: () => void) {
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.name)
         cb()
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, null)
@@ -28,9 +28,13 @@ export class IndexBuffer {
 
     setData({ usage, array }: DataOption) {
         this.usage = usage || this.gl.STATIC_DRAW
-        this.length = array.length
+        this._length = array.length
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.name)
         this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, array, this.usage)
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, null)
+    }
+
+    get length() {
+        return this._length
     }
 }
