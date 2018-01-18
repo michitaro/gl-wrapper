@@ -113,6 +113,12 @@ export class Program {
         }
     }
 
+    uniform2fv(vars: { [name: string]: number[] }) {
+        for (let name in vars) {
+            this.gl.uniform2fv(this.uniformLocation(name), vars[name])
+        }
+    }
+
     uniform3fv(vars: { [name: string]: number[] }) {
         for (let name in vars) {
             this.gl.uniform3fv(this.uniformLocation(name), vars[name])
