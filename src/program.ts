@@ -11,7 +11,7 @@ export class Program {
     private uniformLocationMemo = new Map<string, WebGLUniformLocation>()
     private refCount = 1
 
-    private constructor(private gl: WebGLRenderingContext, private vertSource: string, private fragSource: string) {
+    private constructor(readonly gl: WebGLRenderingContext, private vertSource: string, private fragSource: string) {
         this.vertShader = this.createShader(vertSource, this.gl.VERTEX_SHADER)
         this.fragShader = this.createShader(fragSource, this.gl.FRAGMENT_SHADER)
         this.name = glUtils.nonNull(this.gl.createProgram())

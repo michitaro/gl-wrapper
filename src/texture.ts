@@ -5,7 +5,7 @@ export type ImageLike = HTMLImageElement | HTMLCanvasElement | ImageData
 export class Texture {
     readonly name: WebGLTexture
 
-    constructor(private gl: WebGLRenderingContext, parameterSetter?: (gl: WebGLRenderingContext) => void) {
+    constructor(readonly gl: WebGLRenderingContext, parameterSetter?: (gl: WebGLRenderingContext) => void) {
         this.name = glUtils.nonNull(gl.createTexture())
         this.bind(() => (parameterSetter || defaultParameterSetter)(this.gl))
     }

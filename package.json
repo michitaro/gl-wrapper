@@ -5,22 +5,23 @@
   "types": "./lib/index.d.ts",
   "scripts": {
     "prepublish": "tsc",
-    "example": "webpack --context example --config ./example/webpack.config.js",
-    "example-server": "webpack-dev-server --context example --config ./example/webpack.config.js"
+    "example": "webpack --context example --config ./example/webpack.config.js --mode production",
+    "example-server": "webpack-dev-server --context example --config ./example/webpack.config.js --mode development"
   },
   "devDependencies": {
-    "@types/sprintf-js": "0.0.27",
-    "file-loader": "^0.11.2",
-    "gh-pages": "^1.0.0",
+    "@types/sprintf-js": "^1.1.0",
+    "file-loader": "^1.1.11",
+    "gh-pages": "^1.1.0",
     "raw-loader": "^0.5.1",
-    "ts-loader": "^2.3.2",
-    "ts-node": "^3.3.0",
-    "typescript": "^2.4.2",
-    "webpack": "^3.4.1",
-    "webpack-dev-server": "^2.6.1"
+    "ts-loader": "^4.0.1",
+    "ts-node": "^5.0.1",
+    "typescript": "^2.7.2",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.12",
+    "webpack-dev-server": "^3.1.1"
   },
   "dependencies": {
-    "@hscmap/tuple-map": "latest",
+    "@hscmap/tuple-map": "0.0.3",
     "sprintf-js": "^1.1.1"
   },
   "homepage": "https://github.com/michitaro/gl-wrapper",

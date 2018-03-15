@@ -16,14 +16,14 @@ export type DataOption = { members?: Member[], array?: TypedArray, usage?: numbe
 
 export class AttribList {
     private bufferName: WebGLBuffer
-    private stride: number
-    private offset: number[]
-    private members: Member[]
+    private stride!: number
+    private offset!: number[]
+    private members!: Member[]
     private usage = -1
     private bufferSize = -1
     vertexCount = 0
 
-    constructor(private gl: WebGLRenderingContext, data?: DataOption) {
+    constructor(readonly gl: WebGLRenderingContext, data?: DataOption) {
         this.bufferName = glUtils.nonNull(gl.createBuffer())
         if (data) {
             this.setData(data)

@@ -7,10 +7,10 @@ export interface DataOption {
 
 export class IndexBuffer {
     private name: WebGLBuffer
-    private usage: number
-    private _length: number
+    private usage!: number
+    private _length!: number
 
-    constructor(private gl: WebGLRenderingContext, dataOption?: DataOption) {
+    constructor(readonly gl: WebGLRenderingContext, dataOption?: DataOption) {
         this.name = glUtils.nonNull(this.gl.createBuffer())
         if (dataOption)
             this.setData(dataOption)
