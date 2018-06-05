@@ -5,4 +5,4 @@ export { utils }
 export { Program } from "./program"
 export { AttribList } from "./attrib_list"
 export { IndexBuffer } from './index_buffer'
-export { Texture } from "./texture"
+export { Texture, ImageLike } from "./texture"
